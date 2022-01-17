@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 
-import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, query, where } from 'firebase/firestore'
+import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, query, where, orderBy, serverTimestamp } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyCc3e8BVTAE3BnpaZmt4FLZqbHgwEs3rBI",
@@ -21,7 +21,10 @@ const db = getFirestore(app);
 const CollRef = collection(db, 'books');
 
 //Queries 
-const q = query(CollRef, where('author', '==', 'asmaa Ahmed'))
+//const q = query(CollRef, where('author', '==', 'asmaa Ahmed'))
+
+// order by queries 
+const q = query(CollRef, orderBy('createdAt', 'desc'))
 //get collection data 
 /*
 getDocs(CollRef).then((snapShot) => {
@@ -63,6 +66,7 @@ addBookForm.addEventListener('submit', (e) => {
   addDoc(CollRef, {
     title: addBookForm.title.value,
     author: addBookForm.author.value,
+    createdAt: serverTimestamp()
   })
     .then(() => {
       addBookForm.reset();
