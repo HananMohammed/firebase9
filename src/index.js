@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 
-import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore'
+import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, query, where } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyCc3e8BVTAE3BnpaZmt4FLZqbHgwEs3rBI",
@@ -20,7 +20,9 @@ const db = getFirestore(app);
 //collection reference
 const CollRef = collection(db, 'books');
 
-//get realtime collection data 
+//Queries 
+const q = query(CollRef, where('author', '==', 'asmaa Ahmed'))
+//get collection data 
 /*
 getDocs(CollRef).then((snapShot) => {
   let books = [];
@@ -33,9 +35,9 @@ getDocs(CollRef).then((snapShot) => {
   console.log(err.message)
 })
 */
-//get realtime collection data 
 
-onSnapshot(CollRef, (snapShot) => {
+//get realtime collection data 
+onSnapshot( q , (snapShot) => {
   let books = [];
   snapShot.docs.forEach((doc) => {
     books.push({ ...doc.data(), id: doc.id })
