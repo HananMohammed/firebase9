@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 
-import { getFirestore, collection, getDocs } from 'firebase/firestore'
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyCc3e8BVTAE3BnpaZmt4FLZqbHgwEs3rBI",
@@ -18,17 +18,17 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app);
 
 //collection reference
-const Books = collection(db, 'books');
+const CollRef = collection(db, 'books');
 
 //get collection data 
-getDocs(Books).then((snapShot) => {
-  let books =[];
- // console.log(snapShot)
- snapShot.docs.forEach((doc)=>{
-    books.push({...doc.data(), id: doc.id})
- })
- console.log(books)
-}).catch((err)=>{
+getDocs(CollRef).then((snapShot) => {
+  let books = [];
+  // console.log(snapShot)
+  snapShot.docs.forEach((doc) => {
+    books.push({ ...doc.data(), id: doc.id })
+  })
+  console.log(books)
+}).catch((err) => {
   console.log(err.message)
 })
 
@@ -42,3 +42,25 @@ async function getBooks(db) {
 }
 getBooks(db)
 */
+
+// adding docs
+const addBookForm = document.querySelector('.add')
+addBookForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+  addDoc(CollRef, {
+    title: addBookForm.title.value,
+    author:addBookForm.author.value,
+  })
+  .then(()=>{
+    addBookForm.reset();
+  })
+})
+
+
+// deleting docs
+const deleteBookForm = document.querySelector('.delete')
+deleteBookForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const docRef = doc(db, 'books', deleteBookForm.id.value)
+  deleteDoc(docRef).then(()=>deleteBookForm.reset())
+})
