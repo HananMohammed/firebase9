@@ -13,7 +13,12 @@ import {
    serverTimestamp,
    getDoc,
    updateDoc
-  } from 'firebase/firestore'
+  } from 'firebase/firestore';
+
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword
+   } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCc3e8BVTAE3BnpaZmt4FLZqbHgwEs3rBI",
@@ -29,6 +34,7 @@ const app = initializeApp(firebaseConfig)
 
 //initialize Services 
 const db = getFirestore(app);
+const auth = getAuth();
 
 //collection reference
 const CollRef = collection(db, 'books');
@@ -81,9 +87,9 @@ addBookForm.addEventListener('submit', (e) => {
     author: addBookForm.author.value,
     createdAt: serverTimestamp()
   })
-    .then(() => {
-      addBookForm.reset();
-    })
+  .then(() => {
+    addBookForm.reset();
+  })
 })
 
 
@@ -114,4 +120,26 @@ updateBookForm.addEventListener('submit', (e) => {
   e.preventDefault()
   const docRef = doc(db, 'books', updateBookForm.id.value)
   updateDoc(docRef, {  title:'Updated Title'}).then(()=>{updateBookForm.reset();})
+})
+
+
+//Authentication
+const signupForm = document.querySelector('.signup')
+signupForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const email = signupForm.email.value
+  const password = signupForm.password.value
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user);
+      signupForm.reset();
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorMessage);
+    });
 })
