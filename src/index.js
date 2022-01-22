@@ -19,7 +19,8 @@ import {
     getAuth, 
     createUserWithEmailAndPassword,
     signOut,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    onAuthStateChanged
    } from "firebase/auth";
 
 const firebaseConfig = {
@@ -134,7 +135,7 @@ signupForm.addEventListener('submit', (e) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      console.log(user);
+    //  console.log(user);
       signupForm.reset();
     })
     .catch((error) => {
@@ -154,7 +155,7 @@ loginForm.addEventListener('submit', (e) => {
   signInWithEmailAndPassword(auth, email, password)
   .then((userCredential)=>{
     const user = userCredential.user;
-    console.log(user);
+   // console.log(user);
     loginForm.reset();
   })
 })
@@ -166,9 +167,16 @@ logoutForm.addEventListener('click', (e)=>{
  
   e.preventDefault()
   signOut(auth).then(()=>{ 
-    console.log('The USer Signed Out')
+   // console.log('The USer Signed Out')
    }).catch((err)=>{
       console.log(err.message)
    })
    
+})
+
+
+//Subscribing to Auth Changes 
+
+onAuthStateChanged(auth, (user)=>{
+  console.log('User Status Changed : ', user);
 })
